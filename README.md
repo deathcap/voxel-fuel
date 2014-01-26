@@ -1,0 +1,6 @@
+# voxel-cs
+
+## License
+
+MIT
+
