@@ -10,8 +10,8 @@
     "voxel"
   ],
   "dependencies": {
+    "voxel-server": "~2.1.0"
   },
-  "peerDependencies": {
-  },
+  "peerDependencies": {},
   "license": "MIT"
 }
