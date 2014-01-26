@@ -35,7 +35,9 @@ CSPlugin.prototype.enable = function() {
   });
 
   //this.rtcConnection = quickconnect({signalhost: 'http://rtc.io/switchboard/', ns: 'dctest', data:true}); // ~0.7
-  quickconnect('http://rtc.io/switchboard/', {ns: 'dctest'})
+  var self = this;
+
+  quickconnect('http://rtc.io/switchboard/', {ns: 'dctest', debug:true})
     .createDataChannel('test')
     .on('test:open', function(channel, peerId) {
       console.log('data channel opened ',channel,peerId);
@@ -47,7 +49,8 @@ CSPlugin.prototype.enable = function() {
         console.log('emitter ready');
       });
 
-      server.connectClient(emitter);
+      //self.server.connectClient(emitter); // Uncaught TypeError: Object #<DuplexEmitter> has no method 'pipe' 
+      self.server.connectClient(stream);
   });
 };
 
