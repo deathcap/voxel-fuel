@@ -13,7 +13,8 @@
     "voxel-server": "git://github.com/deathcap/voxel-server.git#22640a2161f2b1f582659ad7c1b342ff811a803f",
     "rtc-data-stream": "~0.0.1",
     "rtc-quickconnect": "~0.8.3",
-    "duplex-emitter": "~2.1.2"
+    "duplex-emitter": "~2.1.2",
+    "voxel-client": "~2.1.0"
   },
   "peerDependencies": {},
   "license": "MIT"
