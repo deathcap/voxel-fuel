@@ -27,20 +27,41 @@ function CSPlugin(game, opts) {
 
   this.clientOpts = {engine: engine}
     //serverStream:  TODO
-
-  if (this.enableServer)
-    this.server = Server(this.serverOpts);
-
-  /* TODO: need to pass serverStream
-  if (this.enableClient)
-    this.client = Client(this.clientOpts);
-    */
-
   this.enable();
 }
 
+var connectPeer = function(cb) {
+  quickconnect('http://rtc.io/switchboard/', {ns: 'dctest', debug:true})
+    .createDataChannel('test')
+    .on('test:open', function(channel, peerId) {
+      console.log('data channel opened ',channel,peerId);
+      var stream = rtcDataStream(channel);
+      var emitter = duplexEmitter(stream);
+
+      emitter.emit('ready');
+      emitter.on('ready', function() {
+        console.log('emitter ready');
+      });
+
+      cb(stream);
+    });
+};
+
 CSPlugin.prototype.enable = function() {
-  if (this.server) {
+  var self = this;
+
+  if (this.enableClient) {
+    connectPeer(function(stream) {
+      self.clientOpts.serverStream = stream;
+
+      console.log('client connectPeer stream',stream);
+      self.client = Client(self.clientOpts);
+    });
+  }
+
+  if (this.enableServer) {
+    this.server = Server(this.serverOpts);
+
     this.server.on('missingChunk', function(chunk) {
       console.log('server missingChunk',chunk);
     });
@@ -54,25 +75,13 @@ CSPlugin.prototype.enable = function() {
     });
 
     //this.rtcConnection = quickconnect({signalhost: 'http://rtc.io/switchboard/', ns: 'dctest', data:true}); // ~0.7
-    var self = this;
 
-    quickconnect('http://rtc.io/switchboard/', {ns: 'dctest', debug:true})
-      .createDataChannel('test')
-      .on('test:open', function(channel, peerId) {
-        console.log('data channel opened ',channel,peerId);
-        var stream = rtcDataStream(channel);
-        var emitter = duplexEmitter(stream);
-
-        emitter.emit('ready');
-        emitter.on('ready', function() {
-          console.log('emitter ready');
-        });
-
-        //self.server.connectClient(emitter); // Uncaught TypeError: Object #<DuplexEmitter> has no method 'pipe' 
-        self.server.connectClient(stream);
+    connectPeer(function(stream) {
+      console.log('server connectPeer stream',stream);
+      //self.server.connectClient(emitter); // Uncaught TypeError: Object #<DuplexEmitter> has no method 'pipe' 
+      self.server.connectClient(stream);
     });
   }
-  //if (this.client) // TODO
 };
 
 CSPlugin.prototype.disable = function() {
