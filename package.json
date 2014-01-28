@@ -11,8 +11,8 @@
   ],
   "dependencies": {
     "voxel-engine": "git://github.com/deathcap/voxel-engine#500427b089987c3844f7236983f47c1752198704",
-    "voxel-server": "git://github.com/deathcap/voxel-server.git#f204ec9c8a90ba82e89afb733b76622f00d83047",
-    "voxel-client": "git://github.com/deathcap/voxel-client.git#1b86d6de77baf0226be63f8d698db335cf6e2d6f",
+    "voxel-server": "git://github.com/deathcap/voxel-server.git#4758460e61a67b31b6ae53665d86764d890da3bb",
+    "voxel-client": "git://github.com/deathcap/voxel-client.git#e815bcb24626944fbe13d823eee51b24b853f56f",
     "rtc-data-stream": "~0.0.1",
     "rtc-quickconnect": "~0.8.3",
     "duplex-emitter": "~2.1.2"
