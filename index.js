@@ -5,6 +5,7 @@ var Client = require('voxel-client');
 var rtcDataStream = require('rtc-data-stream');
 var quickconnect = require('rtc-quickconnect');
 var duplexEmitter = require('duplex-emitter');
+var engine = require('voxel-engine');
 
 module.exports = function(game, opts) {
   return new CSPlugin(game, opts);
@@ -19,11 +20,12 @@ function CSPlugin(game, opts) {
 
 
   this.serverOpts = {
+    engine: engine,
     avatarInitialPosition: [2, 20, 2],
     forwardEvents: ['attack', 'chat']
   };
 
-  this.clientOpts = {}
+  this.clientOpts = {engine: engine}
     //serverStream:  TODO
 
   if (this.enableServer)

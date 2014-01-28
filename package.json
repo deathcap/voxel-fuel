@@ -10,11 +10,12 @@
     "voxel"
   ],
   "dependencies": {
-    "voxel-server": "git://github.com/deathcap/voxel-server.git#22640a2161f2b1f582659ad7c1b342ff811a803f",
+    "voxel-engine": "git://github.com/deathcap/voxel-engine#500427b089987c3844f7236983f47c1752198704",
+    "voxel-server": "git://github.com/deathcap/voxel-server.git#f204ec9c8a90ba82e89afb733b76622f00d83047",
+    "voxel-client": "git://github.com/deathcap/voxel-client.git#1b86d6de77baf0226be63f8d698db335cf6e2d6f",
     "rtc-data-stream": "~0.0.1",
     "rtc-quickconnect": "~0.8.3",
-    "duplex-emitter": "~2.1.2",
-    "voxel-client": "~2.1.0"
+    "duplex-emitter": "~2.1.2"
   },
   "peerDependencies": {},
   "license": "MIT"
