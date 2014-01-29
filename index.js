@@ -7,17 +7,16 @@ var quickconnect = require('rtc-quickconnect');
 var duplexEmitter = require('duplex-emitter');
 var engine = require('voxel-engine');
 
-module.exports = function(game, opts) {
-  return new CSPlugin(game, opts);
+module.exports = function(opts) {
+  return new CSPlugin(opts);
 };
 
-function CSPlugin(game, opts) {
+function CSPlugin(opts) {
 
   opts = opts || {};
 
   this.enableServer = opts.remoteHost === undefined;  // local server unless connecting remotely
   this.enableClient = process.browser; // always have client if running in browser
-
 
   this.serverOpts = {
     engine: engine,
@@ -26,7 +25,6 @@ function CSPlugin(game, opts) {
   };
 
   this.clientOpts = {engine: engine}
-    //serverStream:  TODO
   this.enable();
 }
 
