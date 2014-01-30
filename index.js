@@ -17,6 +17,8 @@ function Fuel(opts) {
 
   opts = opts || {};
 
+  this.rtcDebug = opts.rtcDebug === undefined ? false : opts.rtcDebug;
+
   this.enableServer = opts.remoteHost === undefined;  // local server unless connecting remotely
   this.enableClient = process.browser; // always have client if running in browser
 
@@ -33,12 +35,11 @@ function Fuel(opts) {
 
   this.clientOpts = extend(extend({engine: engine}, opts.clientOpts), this.commonOpts);
 
-
   this.setup();
 }
 
 var connectPeer = function(cb) {
-  quickconnect('http://rtc.io/switchboard/', {ns: 'dctest', debug:true})
+  quickconnect('http://rtc.io/switchboard/', {ns: 'dctest', debug:this.rtcDebug})
     .createDataChannel('test')
     .on('test:open', function(channel, peerId) {
       console.log('data channel opened ',channel,peerId);
