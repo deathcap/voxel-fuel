@@ -10,7 +10,8 @@
     "voxel"
   ],
   "dependencies": {
-    "voxel-engine": "git://github.com/deathcap/voxel-engine#500427b089987c3844f7236983f47c1752198704",
+    "voxel-plugins": "git://github.com/deathcap/voxel-plugins.git#9a1c6b5e9e3e3d90eae5a25bc1c6bb9387d3f7ea",
+    "voxel-engine": "git://github.com/deathcap/voxel-engine.git#500427b089987c3844f7236983f47c1752198704",
     "voxel-server": "git://github.com/deathcap/voxel-server.git#4758460e61a67b31b6ae53665d86764d890da3bb",
     "voxel-client": "git://github.com/deathcap/voxel-client.git#e815bcb24626944fbe13d823eee51b24b853f56f",
     "rtc-data-stream": "~0.0.1",
