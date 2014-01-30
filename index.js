@@ -4,7 +4,6 @@ var Server = require('voxel-server');
 var Client = require('voxel-client');
 var rtcDataStream = require('rtc-data-stream');
 var quickconnect = require('rtc-quickconnect');
-var duplexEmitter = require('duplex-emitter');
 var engine = require('voxel-engine');
 var extend = require('extend');
 var createPlugins = require('voxel-plugins');
@@ -44,12 +43,6 @@ var connectPeer = function(cb) {
     .on('test:open', function(channel, peerId) {
       console.log('data channel opened ',channel,peerId);
       var stream = rtcDataStream(channel);
-      var emitter = duplexEmitter(stream);
-
-      emitter.emit('ready');
-      emitter.on('ready', function() {
-        console.log('emitter ready');
-      });
 
       cb(stream);
     });

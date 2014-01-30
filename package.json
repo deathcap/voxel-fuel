@@ -16,7 +16,6 @@
     "voxel-client": "git://github.com/deathcap/voxel-client.git#e815bcb24626944fbe13d823eee51b24b853f56f",
     "rtc-data-stream": "~0.0.1",
     "rtc-quickconnect": "~0.8.3",
-    "duplex-emitter": "~2.1.2",
     "extend": "~1.2.1"
   },
   "peerDependencies": {},
