@@ -101,9 +101,14 @@ Fuel.prototype.setup = function() {
       console.log('server missingChunk',chunk);
     });
 
-    this.server.on('client.join', function(client) {
-      console.log('server client.join',client);
+    this.server.on('join', function(client) {
+      console.log('server client join',client);
     });
+
+    this.server.on('leave', function(client) {
+      console.log('server client leave',client);
+    });
+
 
     this.server.on('error', function(error) {
       console.log('server error',error);
