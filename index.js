@@ -20,7 +20,10 @@ function Fuel(opts) {
   this.enableServer = opts.remoteHost === undefined;  // local server unless connecting remotely
   this.enableClient = process.browser; // always have client if running in browser
 
-  this.commonOpts = opts.commonOpts || {};
+  this.pluginOpts = opts.pluginOpts || {};
+  this.require = opts.require || require;
+
+  this.commonOpts = opts.commonOpts || this.pluginOpts['voxel-engine'] || {};
 
   this.serverOpts = extend(extend({
     engine: engine,
@@ -30,8 +33,6 @@ function Fuel(opts) {
 
   this.clientOpts = extend(extend({engine: engine}, opts.clientOpts), this.commonOpts);
 
-  this.pluginOpts = opts.pluginOpts || {};
-  this.require = opts.require || require;
 
   this.setup();
 }
