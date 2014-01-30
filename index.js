@@ -16,7 +16,7 @@ function Fuel(opts) {
 
   opts = opts || {};
 
-  this.rtcDebug = opts.rtcDebug === undefined ? false : opts.rtcDebug;
+  this.rtcDebug = opts.rtcDebug === undefined ? true : opts.rtcDebug;
 
   this.enableServer = opts.remoteHost === undefined;  // local server unless connecting remotely
   this.enableClient = process.browser; // always have client if running in browser
@@ -33,6 +33,7 @@ function Fuel(opts) {
   }, opts.serverOpts), this.commonOpts);
 
   this.clientOpts = extend(extend({engine: engine}, opts.clientOpts), this.commonOpts);
+  this.clientOpts.overrideEngineOpts = this.clientOpts; // use local settings instead of from server, since not always serizable TODO
 
   this.setup();
 }
@@ -79,6 +80,7 @@ Fuel.prototype.setup = function() {
         
         var game = self.client.game;
         var registry = game.plugins.get('voxel-registry');
+        var plugins = game.plugins;
 
         game.materials.load(registry.getBlockPropsAll('texture'));   // TODO: have voxel-registry do this? on post-plugin load
 
