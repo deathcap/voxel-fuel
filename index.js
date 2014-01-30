@@ -28,7 +28,7 @@ function Fuel(opts) {
   }, opts.serverOpts), this.commonOpts);
 
   this.clientOpts = extend(extend({engine: engine}, opts.clientOpts), this.commonOpts);
-  this.enable();
+  this.setup();
 }
 
 var connectPeer = function(cb) {
@@ -48,7 +48,7 @@ var connectPeer = function(cb) {
     });
 };
 
-Fuel.prototype.enable = function() {
+Fuel.prototype.setup = function() {
   var self = this;
 
   if (this.enableClient) {
@@ -75,8 +75,6 @@ Fuel.prototype.enable = function() {
       console.log('server error',error);
     });
 
-    //this.rtcConnection = quickconnect({signalhost: 'http://rtc.io/switchboard/', ns: 'dctest', data:true}); // ~0.7
-
     connectPeer(function(stream) {
       console.log('server connectPeer stream',stream);
       //self.server.connectClient(emitter); // Uncaught TypeError: Object #<DuplexEmitter> has no method 'pipe' 
@@ -85,5 +83,3 @@ Fuel.prototype.enable = function() {
   }
 };
 
-Fuel.prototype.disable = function() {
-};
