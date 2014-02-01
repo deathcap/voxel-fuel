@@ -38,6 +38,8 @@ function Fuel(opts) {
   this.clientOpts = extend(extend({engine: engine}, opts.clientOpts), this.commonOpts);
   this.clientOpts.overrideEngineOpts = this.clientOpts; // use local settings instead of from server, since not always serizable TODO
 
+  if (opts.exposeGlobal) window.fuel = this;
+
   this.setup();
 }
 
