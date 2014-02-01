@@ -17,6 +17,9 @@ function Fuel(opts) {
   opts = opts || {};
 
   this.rtcDebug = opts.rtcDebug === undefined ? true : opts.rtcDebug;
+  this.rtcSwitchboard = opts.rtcSwitchboard === undefined ? 'http://rtc.io/switchboard/' : opts.rtcSwitchboard;
+  this.rtcChannelName = opts.rtcChannelName === undefined ? 'test' : opts.rtcChannelName;
+  this.rtcNamespace = opts.rtcNamespace == undefined ? 'dctest' : opts.rtcNamespace;
 
   this.enableServer = opts.remoteHost === undefined;  // local server unless connecting remotely
   this.enableClient = process.browser; // always have client if running in browser
@@ -38,14 +41,19 @@ function Fuel(opts) {
   this.setup();
 }
 
-var connectPeer = function(cb) {
-  quickconnect('http://rtc.io/switchboard/', {ns: 'dctest', debug:this.rtcDebug})
-    .createDataChannel('test')
-    .on('test:open', function(channel, peerId) {
+Fuel.prototype.connectPeer = function(cb) {
+  var self = this;
+  quickconnect(this.rtcSwitchboard, {ns: this.rtcNamespace, debug:this.rtcDebug})
+    .createDataChannel(this.rtcChannelName)
+    .on(this.rtcChannelName + ':open', function(channel, peerId) {
       console.log('data channel opened ',channel,peerId);
       var stream = rtcDataStream(channel);
 
       cb(stream);
+    })
+    .on('error', function(err) {
+      console.log('rtc error', err);
+      alert('Fatal RTC error connecting to '+self.rtcSwitchboard);
     });
 };
 
@@ -66,7 +74,7 @@ Fuel.prototype.setup = function() {
 
   if (this.enableClient) {
     console.log('creating client');
-    connectPeer(function(stream) {
+    this.connectPeer(function(stream) {
       self.clientOpts.serverStream = stream;
 
       console.log('client connectPeer stream',stream);
@@ -116,9 +124,8 @@ Fuel.prototype.setup = function() {
 
     this.setupPlugins(this.server.game); // sets self.server.game.plugins
 
-    connectPeer(function(stream) {
+    this.connectPeer(function(stream) {
       console.log('server connectPeer stream',stream);
-      //self.server.connectClient(emitter); // Uncaught TypeError: Object #<DuplexEmitter> has no method 'pipe' 
       self.server.connectClient(stream);
     });
   }
