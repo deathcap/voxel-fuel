@@ -77,6 +77,8 @@ Fuel.prototype.setup = function() {
   if (this.enableClient) {
     console.log('creating client');
     this.connectPeer(function(stream) {
+      if (self.client) return; // only create one client TODO: refactor, use .once() instead of .on()?
+
       self.clientOpts.serverStream = stream;
 
       console.log('client connectPeer stream',stream);
