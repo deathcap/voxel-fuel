@@ -59,16 +59,12 @@ Fuel.prototype.connectPeer = function(cb) {
     });
 };
 
-Fuel.prototype.setupPlugins = function(game) {
-  console.log('setupPlugins for',game);
-  game.plugins = createPlugins(game, {require: this.require});
-
+Fuel.prototype.setupPlugins = function(plugins) {
   for (var name in this.pluginOpts) {
-    game.plugins.add(name, this.pluginOpts[name]);
+    plugins.add(name, this.pluginOpts[name]);
   }
 
-  game.plugins.loadAll();
-  console.log('setupPlugins finished for',game);
+  plugins.loadAll();
 };
 
 Fuel.prototype.setup = function() {
@@ -86,7 +82,12 @@ Fuel.prototype.setup = function() {
 
       // received initial game settings from server
       self.client.connection.on('settings', function(settings) {
-        self.setupPlugins(self.client.game); // sets self.client.game.plugins
+        console.log('** setting up client plugins');
+        self.client.game.plugins = createPlugins(self.client.game, {require: self.require});
+        self.client.game.plugins.all['voxel-client'] = self.client; // synthetic plugin for access
+
+        self.setupPlugins(self.client.game.plugins);
+        console.log('** finished setting up client plugins');
 
         // post-plugin load setup
         
@@ -126,7 +127,11 @@ Fuel.prototype.setup = function() {
       console.log('server error',error);
     });
 
-    this.setupPlugins(this.server.game); // sets self.server.game.plugins
+    console.log('** setting up server plugins');
+    this.server.game.plugins = createPlugins(this.server.game, {require: this.require});
+    this.server.game.plugins.all['voxel-server'] = this.server; // synthetic plugin for access
+    this.setupPlugins(this.server.game.plugins);
+    console.log('** finished setting up server plugins');
 
     this.connectPeer(function(stream) {
       console.log('server connectPeer stream',stream);
