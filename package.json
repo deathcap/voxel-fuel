@@ -14,7 +14,7 @@
     "voxel-engine": "git://github.com/deathcap/voxel-engine.git#500427b089987c3844f7236983f47c1752198704",
     "voxel-server": "git://github.com/deathcap/voxel-server.git#4758460e61a67b31b6ae53665d86764d890da3bb",
     "voxel-client": "git://github.com/deathcap/voxel-client.git#e815bcb24626944fbe13d823eee51b24b853f56f",
-    "rtc-data-stream": "~0.0.1",
+    "rtc-data-stream": "git://github.com/deathcap/rtc-data-stream.git#0955fddfc989aa48c9342da5262904d204ee4b8a",
     "rtc-quickconnect": "~0.8.3",
     "extend": "~1.2.1"
   },
