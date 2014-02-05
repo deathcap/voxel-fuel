@@ -7,6 +7,7 @@ var quickconnect = require('rtc-quickconnect');
 var engine = require('voxel-engine');
 var extend = require('extend');
 var createPlugins = require('voxel-plugins');
+var localMessenger = require('rtc-signaller-sw');
 
 module.exports = function(opts) {
   return new Fuel(opts);
@@ -17,7 +18,8 @@ function Fuel(opts) {
   opts = opts || {};
 
   this.rtcDebug = opts.rtcDebug === undefined ? true : opts.rtcDebug;
-  this.rtcSwitchboard = opts.rtcSwitchboard === undefined ? 'http://rtc.io/switchboard/' : opts.rtcSwitchboard;
+  //this.rtcSwitchboard = opts.rtcSwitchboard === undefined ? 'http://rtc.io/switchboard/' : opts.rtcSwitchboard;
+  this.rtcSwitchboard = opts.rtcSwitchboard === undefined ? localMessenger() : opts.rtcSwitchboard;
   this.rtcChannelName = opts.rtcChannelName === undefined ? 'test' : opts.rtcChannelName;
   this.rtcNamespace = opts.rtcNamespace == undefined ? 'dctest' : opts.rtcNamespace;
 
