@@ -23,8 +23,9 @@ function Fuel(opts) {
   this.rtcChannelName = opts.rtcChannelName === undefined ? 'test' : opts.rtcChannelName;
   this.rtcNamespace = opts.rtcNamespace == undefined ? 'dctest' : opts.rtcNamespace;
 
-  this.enableServer = opts.remoteHost === undefined;  // local server unless connecting remotely
   this.enableClient = process.browser; // always have client if running in browser
+  this.enableServer = this.needServer();
+  console.log('enableServer = ',this.enableServer);
 
   this.pluginOpts = opts.pluginOpts || {};
   this.require = opts.require || require;
@@ -44,6 +45,17 @@ function Fuel(opts) {
 
   this.setup();
 }
+
+Fuel.prototype.needServer = function() {
+  if (!this.enableClient) return true; // if aren't running a client, we have to run something.. run only a server
+
+  // always run server on client for now (TODO see below)
+  return true;
+
+  // self-host server unless user explicitly entered a '#id' hash in the URL
+  // TODO: detect if no server is found, then host one? consider page refresh
+  //return window.location.hash === '';
+};
 
 Fuel.prototype.connectPeer = function(cb) {
   var self = this;
