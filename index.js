@@ -49,12 +49,9 @@ function Fuel(opts) {
 Fuel.prototype.needServer = function() {
   if (!this.enableClient) return true; // if aren't running a client, we have to run something.. run only a server
 
-  // always run server on client for now (TODO see below)
-  return true;
-
   // self-host server unless user explicitly entered a '#id' hash in the URL
   // TODO: detect if no server is found, then host one? consider page refresh
-  //return window.location.hash === '';
+  return window.location.hash === '';
 };
 
 Fuel.prototype.connectPeer = function(cb) {
