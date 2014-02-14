@@ -67,7 +67,7 @@ Fuel.prototype.connectPeer = function(cb) {
       console.log('data channel opened ',channel,peerId);
       var stream = rtcDataStream(channel);
 
-      cb(stream);
+      cb(stream, peerId);
     })
     .on('error', function(err) {
       console.log('rtc error', err);
@@ -149,9 +149,9 @@ Fuel.prototype.setup = function() {
     this.setupPlugins(this.server.game.plugins);
     console.log('** finished setting up server plugins');
 
-    this.connectPeer(function(stream) {
-      console.log('server connectPeer stream',stream);
-      self.server.connectClient(stream);
+    this.connectPeer(function(stream, peerId) {
+      console.log('server connectPeer stream',stream,peerId);
+      self.server.connectClient(stream, peerId);
     });
   }
 };
