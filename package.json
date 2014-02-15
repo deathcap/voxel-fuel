@@ -17,8 +17,7 @@
     "rtc-data-stream": "git://github.com/deathcap/rtc-data-stream.git#0955fddfc989aa48c9342da5262904d204ee4b8a",
     "rtc-quickconnect": "~0.8.3",
     "rtc-signaller-sw": "git://github.com/deathcap/rtc-signaller-sw.git#bfd9ec5a1ff679ca7dc859c4ec7025b606fd1084",
-    "extend": "~1.2.1",
-    "ever": "0.0.3"
+    "extend": "~1.2.1"
   },
   "peerDependencies": {},
   "license": "MIT"

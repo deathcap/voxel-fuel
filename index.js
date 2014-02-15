@@ -8,7 +8,6 @@ var engine = require('voxel-engine');
 var extend = require('extend');
 var createPlugins = require('voxel-plugins');
 var createLocalMessenger = require('rtc-signaller-sw');
-var ever = require('ever');
 
 module.exports = function(opts) {
   return new Fuel(opts);
@@ -68,8 +67,11 @@ Fuel.prototype.setupClientWaitingUI = function() {
   button.appendChild(message);
 
   var self = this;
-  ever(button).once('click', function() {
-    self.createServer();
+  button.addEventListener('click', function() {
+    if (!self.enableServer) {
+      self.createServer();
+      self.enableServer = true;
+    }
   });
 
   document.body.appendChild(button);
