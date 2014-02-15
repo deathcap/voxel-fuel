@@ -72,11 +72,20 @@ Fuel.prototype.setupClientWaitingUI = function() {
       self.createServer();
       self.enableServer = true;
 
-      this.parentElement.removeChild(this);
+      self.removeClientWaitingUI();
     }
   });
 
+  this.hostButton = button;
   document.body.appendChild(button);
+};
+
+Fuel.prototype.removeClientWaitingUI = function() {
+  console.log('removeClientWaitingUI');
+  if (this.hostButton) {
+    this.hostButton.parentElement.removeChild(this.hostButton);
+    delete this.hostButton;
+  }
 };
 
 Fuel.prototype.needServer = function() {
@@ -132,6 +141,8 @@ Fuel.prototype.createClient = function() {
     // received initial game settings from server
     self.client.connection.on('settings', function(settings) {
       console.log('** setting up client plugins');
+      self.removeClientWaitingUI();
+
       self.client.game.plugins = createPlugins(self.client.game, {require: self.require});
       self.client.game.plugins.all['voxel-client'] = self.client; // synthetic plugin for access
 
