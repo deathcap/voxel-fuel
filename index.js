@@ -26,6 +26,7 @@ function Fuel(opts) {
   this.enableClient = process.browser; // always have client if running in browser
   this.enableServer = this.needServer();
   console.log('enableServer = ',this.enableServer);
+  if (this.enableClient && !this.enableServer) this.setupClientWaitingUI();
 
   this.pluginOpts = opts.pluginOpts || {};
   this.require = opts.require || require;
@@ -45,6 +46,27 @@ function Fuel(opts) {
 
   this.setup();
 }
+
+Fuel.prototype.setupClientWaitingUI = function() {
+  var div = document.create('div');
+
+  // http://www.tipue.com/blog/center-a-div/ centering a div in a page, horizontally and vertically
+  div.style.border = '10px solid black';
+  div.style.position = 'absolute';
+  div.style.margin = 'auto';
+  div.style.top = '0';
+  div.style.right = '0';
+  div.style.bottom = '0';
+  div.style.left = '0';
+  div.style.width = '30%';
+  div.style.height = '100px';
+  div.style.backgroundColor = '#ccc';
+  
+  var message = document.createTextNode('Waiting for server '+window.location.hash+'...'); // TODO: animate ellipsis
+  div.appendChild(message);
+
+  document.body.appendChild(div);
+};
 
 Fuel.prototype.needServer = function() {
   if (!this.enableClient) return true; // if aren't running a client, we have to run something.. run only a server
