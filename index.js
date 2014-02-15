@@ -8,6 +8,7 @@ var engine = require('voxel-engine');
 var extend = require('extend');
 var createPlugins = require('voxel-plugins');
 var createLocalMessenger = require('rtc-signaller-sw');
+var ever = require('ever');
 
 module.exports = function(opts) {
   return new Fuel(opts);
@@ -44,36 +45,46 @@ function Fuel(opts) {
 
   if (opts.exposeGlobal) window.fuel = this;
 
-  this.setup();
+  if (this.enableClient) this.createClient();
+  if (this.enableServer) this.createServer();
 }
 
 Fuel.prototype.setupClientWaitingUI = function() {
-  var div = document.create('div');
+  var button = document.createElement('button');
 
-  // http://www.tipue.com/blog/center-a-div/ centering a div in a page, horizontally and vertically
-  div.style.border = '10px solid black';
-  div.style.position = 'absolute';
-  div.style.margin = 'auto';
-  div.style.top = '0';
-  div.style.right = '0';
-  div.style.bottom = '0';
-  div.style.left = '0';
-  div.style.width = '30%';
-  div.style.height = '100px';
-  div.style.backgroundColor = '#ccc';
+  // http://www.tipue.com/blog/center-a-button/ centering a button in a page, horizontally and vertically
+  button.style.position = 'absolute';
+  button.style.margin = 'auto';
+  button.style.top = '0';
+  button.style.right = '0';
+  button.style.bottom = '0';
+  button.style.left = '0';
+  button.style.width = '30%';
+  button.style.height = '100px';
+  button.style.backgroundColor = '#ccc';
   
-  var message = document.createTextNode('Waiting for server '+window.location.hash+'...'); // TODO: animate ellipsis
-  div.appendChild(message);
+  // TODO: detect if no server is found, then host one? consider page refresh
+  var message = document.createTextNode('Waiting for server '+window.location.hash+'... (click to host)'); // TODO: animate ellipsis
+  button.appendChild(message);
 
-  document.body.appendChild(div);
+  var self = this;
+  ever(button).once('click', function() {
+    self.createServer();
+  });
+
+  document.body.appendChild(button);
 };
 
 Fuel.prototype.needServer = function() {
   if (!this.enableClient) return true; // if aren't running a client, we have to run something.. run only a server
 
-  // self-host server unless user explicitly entered a '#id' hash in the URL
-  // TODO: detect if no server is found, then host one? consider page refresh
-  return window.location.hash === '';
+  // self-host server unless user explicitly selected room to join
+  return this.getRoomName() === undefined;
+};
+
+// Get name of 'room' hosting/joining; rtc-quickconnect uses '#id' hash
+Fuel.prototype.getRoomName = function() {
+  return window.location.hash || undefined; // '' -> undefined
 };
 
 Fuel.prototype.connectPeer = function(cb) {
@@ -102,76 +113,72 @@ Fuel.prototype.setupPlugins = function(plugins) {
   plugins.loadAll();
 };
 
-Fuel.prototype.setup = function() {
-  var self = this;
+Fuel.prototype.createClient = function() {
+  console.log('creating client');
+  this.connectPeer(function(stream) {
+    if (self.client) return; // only create one client TODO: refactor, use .once() instead of .on()?
 
-  if (this.enableClient) {
-    console.log('creating client');
-    this.connectPeer(function(stream) {
-      if (self.client) return; // only create one client TODO: refactor, use .once() instead of .on()?
+    self.clientOpts.serverStream = stream;
 
-      self.clientOpts.serverStream = stream;
+    console.log('client connectPeer stream',stream);
+    self.client = Client(self.clientOpts);
 
-      console.log('client connectPeer stream',stream);
-      self.client = Client(self.clientOpts);
+    // received initial game settings from server
+    self.client.connection.on('settings', function(settings) {
+      console.log('** setting up client plugins');
+      self.client.game.plugins = createPlugins(self.client.game, {require: self.require});
+      self.client.game.plugins.all['voxel-client'] = self.client; // synthetic plugin for access
 
-      // received initial game settings from server
-      self.client.connection.on('settings', function(settings) {
-        console.log('** setting up client plugins');
-        self.client.game.plugins = createPlugins(self.client.game, {require: self.require});
-        self.client.game.plugins.all['voxel-client'] = self.client; // synthetic plugin for access
+      self.setupPlugins(self.client.game.plugins);
+      console.log('** finished setting up client plugins');
 
-        self.setupPlugins(self.client.game.plugins);
-        console.log('** finished setting up client plugins');
+      // post-plugin load setup
+      
+      var game = self.client.game;
+      var registry = game.plugins.get('voxel-registry');
+      var plugins = game.plugins;
 
-        // post-plugin load setup
-        
-        var game = self.client.game;
-        var registry = game.plugins.get('voxel-registry');
-        var plugins = game.plugins;
+      game.materials.load(registry.getBlockPropsAll('texture'));   // TODO: have voxel-registry do this? on post-plugin load
 
-        game.materials.load(registry.getBlockPropsAll('texture'));   // TODO: have voxel-registry do this? on post-plugin load
-
-        // TODO: this doesn't really belong here. move into respective plugins?
-        game.buttons.down.on('pov', function() { plugins.get('voxel-player').toggle(); });
-        game.buttons.down.on('vr', function() { plugins.toggle('voxel-oculus'); });
-        game.buttons.down.on('home', function() { plugins.get('voxel-player').home(); });
-        game.buttons.down.on('inventory', function() { plugins.get('voxel-inventory-dialog').open(); });
-      });
+      // TODO: this doesn't really belong here. move into respective plugins?
+      game.buttons.down.on('pov', function() { plugins.get('voxel-player').toggle(); });
+      game.buttons.down.on('vr', function() { plugins.toggle('voxel-oculus'); });
+      game.buttons.down.on('home', function() { plugins.get('voxel-player').home(); });
+      game.buttons.down.on('inventory', function() { plugins.get('voxel-inventory-dialog').open(); });
     });
-  }
+  });
+};
 
-  if (this.enableServer) {
-    console.log('creating server');
-    this.server = Server(this.serverOpts);
+Fuel.prototype.createServer = function() {
+  console.log('creating server');
+  this.server = Server(this.serverOpts);
 
-    this.server.on('missingChunk', function(chunk) {
-      console.log('server missingChunk',chunk);
-    });
+  this.server.on('missingChunk', function(chunk) {
+    console.log('server missingChunk',chunk);
+  });
 
-    this.server.on('join', function(client) {
-      console.log('server client join',client);
-    });
+  this.server.on('join', function(client) {
+    console.log('server client join',client);
+  });
 
-    this.server.on('leave', function(client) {
-      console.log('server client leave',client);
-    });
+  this.server.on('leave', function(client) {
+    console.log('server client leave',client);
+  });
 
 
-    this.server.on('error', function(error) {
-      console.log('server error',error);
-    });
+  this.server.on('error', function(error) {
+    console.log('server error',error);
+  });
 
-    console.log('** setting up server plugins');
-    this.server.game.plugins = createPlugins(this.server.game, {require: this.require});
-    this.server.game.plugins.all['voxel-server'] = this.server; // synthetic plugin for access
-    this.setupPlugins(this.server.game.plugins);
-    console.log('** finished setting up server plugins');
+  console.log('** setting up server plugins');
+  this.server.game.plugins = createPlugins(this.server.game, {require: this.require});
+  this.server.game.plugins.all['voxel-server'] = this.server; // synthetic plugin for access
+  this.setupPlugins(this.server.game.plugins);
+  console.log('** finished setting up server plugins');
 
-    this.connectPeer(function(stream, peerId) {
-      console.log('server connectPeer stream',stream,peerId);
-      self.server.connectClient(stream, peerId);
-    });
-  }
+  this.connectPeer(function(stream, peerId) {
+    console.log('server connectPeer stream',stream,peerId);
+    self.server.connectClient(stream, peerId);
+  });
 };
 
