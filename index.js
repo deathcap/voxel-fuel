@@ -71,6 +71,8 @@ Fuel.prototype.setupClientWaitingUI = function() {
     if (!self.enableServer) {
       self.createServer();
       self.enableServer = true;
+
+      this.parentElement.removeChild(this);
     }
   });
 
