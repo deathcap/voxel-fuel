@@ -116,6 +116,8 @@ Fuel.prototype.setupPlugins = function(plugins) {
 };
 
 Fuel.prototype.createClient = function() {
+  var self = this;
+
   console.log('creating client');
   this.connectPeer(function(stream) {
     if (self.client) return; // only create one client TODO: refactor, use .once() instead of .on()?
@@ -152,6 +154,8 @@ Fuel.prototype.createClient = function() {
 };
 
 Fuel.prototype.createServer = function() {
+  var self = this;
+
   console.log('creating server');
   this.server = Server(this.serverOpts);
 
