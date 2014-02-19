@@ -161,7 +161,7 @@ Fuel.prototype.createClient = function() {
       game.buttons.down.on('pov', function() { plugins.get('voxel-player').toggle(); });
       game.buttons.down.on('vr', function() { plugins.toggle('voxel-oculus'); });
       game.buttons.down.on('home', function() { plugins.get('voxel-player').home(); });
-      game.buttons.down.on('inventory', function() { plugins.get('voxel-inventory-dialog').open(); });
+      game.buttons.down.on('inventory', function() { plugins.get('voxel-inventory-crafting').open(); });
     });
   });
 };
