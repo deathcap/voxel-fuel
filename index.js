@@ -8,6 +8,7 @@ var engine = require('voxel-engine');
 var extend = require('extend');
 var createPlugins = require('voxel-plugins');
 var createLocalMessenger = require('rtc-signaller-sw');
+var createMemoryMessenger = require('messenger-memory');
 
 module.exports = function(opts) {
   return new Fuel(opts);
@@ -19,7 +20,8 @@ function Fuel(opts) {
 
   this.rtcDebug = opts.rtcDebug === undefined ? true : opts.rtcDebug;
   //this.createRtcMessenger = opts.createRtcMessenger === undefined ? function() { return 'http://rtc.io/switchboard/'; } : opts.createRtcMessenger;
-  this.createRtcMessenger = opts.createRtcMessenger === undefined ? function() { return createLocalMessenger() } : opts.createRtcMessenger;
+  //this.createRtcMessenger = opts.createRtcMessenger === undefined ? function() { return createLocalMessenger() } : opts.createRtcMessenger;
+  this.createRtcMessenger = opts.createRtcMessenger === undefined ? function() { return createMemoryMessenger() } : opts.createRtcMessenger;
   this.rtcChannelName = opts.rtcChannelName === undefined ? 'test' : opts.rtcChannelName;
   this.rtcNamespace = opts.rtcNamespace == undefined ? 'dctest' : opts.rtcNamespace;
 
