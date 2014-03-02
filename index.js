@@ -17,6 +17,13 @@ function Fuel(opts) {
 
   opts = opts || {};
 
+  if (opts.logLoadTime) {
+    if (typeof window !== 'undefined' && window.performance && window.performance.timing) {
+      var loadingTime = Date.now() - window.performance.timing.navigationStart;
+      console.log("User-perceived page loading time: " + (loadingTime / 1000) + "s");
+    }
+  }
+
   this.rtcDebug = opts.rtcDebug === undefined ? true : opts.rtcDebug;
   //this.createRtcMessenger = opts.createRtcMessenger === undefined ? function() { return 'http://rtc.io/switchboard/'; } : opts.createRtcMessenger;
   //this.createRtcMessenger = opts.createRtcMessenger === undefined ? function() { return createLocalMessenger() } : opts.createRtcMessenger;
