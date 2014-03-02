@@ -4,7 +4,6 @@ var Server = require('voxel-server');
 var Client = require('voxel-client');
 var rtcDataStream = require('rtc-data-stream');
 var quickconnect = require('rtc-quickconnect');
-var engine = require('voxel-engine');
 var extend = require('extend');
 var createPlugins = require('voxel-plugins');
 var createLocalMessenger = require('rtc-signaller-sw');
@@ -34,6 +33,9 @@ function Fuel(opts) {
   this.require = opts.require || require;
 
   this.commonOpts = opts.commonOpts || this.pluginOpts['voxel-engine'] || {};
+  
+  var engine = opts.engine;
+  if (!engine) throw new Error('voxel-fuel requires engine option set to voxel-engine module');
 
   this.serverOpts = extend(extend({
     engine: engine,
