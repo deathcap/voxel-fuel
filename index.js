@@ -55,6 +55,12 @@ function Fuel(opts) {
 
   if (opts.exposeGlobal) window.fuel = this;
 
+  if (engine.prototype.notCapable()) { // TODO: refactor?
+    console.log('[voxel-fuel] FATAL ERROR: system not capable (missing WebGL?); aborting');
+    document.body.appendChild(engine.prototype.notCapableMessage()); // TODO: why doesn't notCapable() append?
+    return;
+  }
+
   if (this.enableClient) this.createClient();
   if (this.enableServer) this.createServer();
 }
@@ -182,6 +188,7 @@ Fuel.prototype.createServer = function() {
 
   console.log('creating server');
   this.server = Server(this.serverOpts);
+  if (this.server.game.notCapable()) return false;
 
   this.server.on('missingChunk', function(chunk) {
     console.log('server missingChunk',chunk);
@@ -210,5 +217,7 @@ Fuel.prototype.createServer = function() {
     console.log('server connectPeer stream',stream,peerId);
     self.server.connectClient(stream, peerId);
   });
+
+  return true;
 };
 
