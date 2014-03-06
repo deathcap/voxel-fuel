@@ -10,12 +10,12 @@
     "voxel"
   ],
   "dependencies": {
-    "voxel-plugins": "git://github.com/deathcap/voxel-plugins.git#140d6ba1fde2b28424e5f731df18b85337516c76",
-    "voxel-server": "git://github.com/deathcap/voxel-server.git#48571ecf5b510af211cb9f3fea26d911b89c41b8",
-    "voxel-client": "git://github.com/deathcap/voxel-client.git#fa24a1ec15cf8f7406d6fe8752413c2e7ebfe518",
+    "voxel-plugins": "git://github.com/deathcap/voxel-plugins.git#8059c499b3ce6c2efa3bd846f4970070bd17b36e",
+    "voxel-server": "git://github.com/deathcap/voxel-server.git#6d5194d3305d58f4dff5c46527918c4a65e6e8be",
+    "voxel-client": "git://github.com/deathcap/voxel-client.git#991d95a95b1fcb55bc41645567fa05bcbe81dc82",
     "rtc-data-stream": "git://github.com/deathcap/rtc-data-stream.git#0955fddfc989aa48c9342da5262904d204ee4b8a",
     "rtc-quickconnect": "~0.12.0",
-    "rtc-signaller-sw": "git://github.com/deathcap/rtc-signaller-sw.git#bfd9ec5a1ff679ca7dc859c4ec7025b606fd1084",
+    "rtc-signaller-sw": "git://github.com/deathcap/rtc-signaller-sw.git#533118fe2238fdee0bac2ab9668490bea4d0d8f8",
     "extend": "~1.2.1",
     "messenger-memory": "~0.3.0"
   },
