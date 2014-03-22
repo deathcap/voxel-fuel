@@ -172,7 +172,10 @@ Fuel.prototype.createClient = function() {
       var registry = game.plugins.get('voxel-registry');
       var plugins = game.plugins;
 
+      // TODO
+      /*
       game.materials.load(registry.getBlockPropsAll('texture'));   // TODO: have voxel-registry do this? on post-plugin load
+      */
 
       // TODO: this doesn't really belong here. move into respective plugins?
       game.buttons.down.on('pov', function() { plugins.get('voxel-player').toggle(); });
